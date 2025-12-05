@@ -185,7 +185,6 @@ final class RequestBuilder {
     }
   }
 
-  @SuppressWarnings("NullAway")
   void addQueryParam(@Nullable String name, @Nullable String value, boolean encoded) {
     if (relativeUrl != null) {
       // Do a one-time combination of the built relative URL and the base URL.
