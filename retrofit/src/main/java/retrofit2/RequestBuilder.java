@@ -196,15 +196,12 @@ final class RequestBuilder {
       relativeUrl = null;
     }
 
-    HttpUrl.Builder nonNullUrlBuilder = urlBuilder;
-    if (nonNullUrlBuilder == null) {
-      throw new IllegalStateException("URL builder not initialized");
-    }
-
     if (encoded) {
-      nonNullUrlBuilder.addEncodedQueryParameter(name, value);
+      //noinspection ConstantConditions Checked to be non-null by above 'if' block.
+      urlBuilder.addEncodedQueryParameter(name, value);
     } else {
-      nonNullUrlBuilder.addQueryParameter(name, value);
+      //noinspection ConstantConditions Checked to be non-null by above 'if' block.
+      urlBuilder.addQueryParameter(name, value);
     }
   }
 
