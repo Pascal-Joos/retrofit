@@ -139,13 +139,12 @@ final class OkHttpCall<T> implements Call<T> {
       callback.onFailure(this, failure);
       return;
     }
-    okhttp3.Call nonNullCall = java.util.Objects.requireNonNull(call, "call == null");
 
     if (canceled) {
-      nonNullCall.cancel();
+      call.cancel();
     }
 
-    nonNullCall.enqueue(
+    call.enqueue(
         new okhttp3.Callback() {
           @Override
           public void onResponse(okhttp3.Call call, okhttp3.Response rawResponse) {
