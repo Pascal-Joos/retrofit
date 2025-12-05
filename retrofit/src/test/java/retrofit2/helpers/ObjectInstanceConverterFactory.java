@@ -12,6 +12,9 @@ public class ObjectInstanceConverterFactory extends Converter.Factory {
   @Override
   public Converter<ResponseBody, ?> responseBodyConverter(
       Type type, Annotation[] annotations, retrofit2.Retrofit retrofit) {
+    if (type.getTypeName().startsWith("java.util.Optional")) {
+      return value -> java.util.Optional.of(VALUE);
+    }
     return value -> VALUE;
   }
 

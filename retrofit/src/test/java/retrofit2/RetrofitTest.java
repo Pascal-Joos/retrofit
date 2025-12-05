@@ -1486,10 +1486,9 @@ public final class RetrofitTest {
           .hasMessage(
               ""
                   + "Could not locate call adapter for class java.lang.String.\n"
-                  + "  Skipped:\n"
-                  + "   * retrofit2.helpers.DelegatingCallAdapterFactory\n"
-                  + "   * retrofit2.helpers.DelegatingCallAdapterFactory\n"
                   + "  Tried:\n"
+                  + "   * retrofit2.helpers.DelegatingCallAdapterFactory\n"
+                  + "   * retrofit2.helpers.DelegatingCallAdapterFactory\n"
                   + "   * retrofit2.helpers.NonMatchingCallAdapterFactory\n"
                   + "   * retrofit2.CompletableFutureCallAdapterFactory\n"
                   + "   * retrofit2.DefaultCallAdapterFactory");

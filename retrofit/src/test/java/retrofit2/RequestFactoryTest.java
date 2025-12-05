@@ -3134,7 +3134,7 @@ public final class RequestFactoryTest {
     } catch (IllegalArgumentException e) {
       assertThat(e)
           .hasMessageContaining(
-              "Query map value 'kat' converted to null by retrofit2.helpers.NullObjectConverterFactory$1 for key 'kit'.");
+              "Query map value 'kat' converted to null by retrofit2.helpers.NullObjectConverterFactory$2 for key 'kit'.");
     }
   }
 
@@ -3181,7 +3181,7 @@ public final class RequestFactoryTest {
     } catch (IllegalArgumentException e) {
       assertThat(e)
           .hasMessageContaining(
-              "Field map value 'kat' converted to null by retrofit2.helpers.NullObjectConverterFactory$1 for key 'kit'.");
+              "Field map value 'kat' converted to null by retrofit2.helpers.NullObjectConverterFactory$2 for key 'kit'.");
     }
   }
 
