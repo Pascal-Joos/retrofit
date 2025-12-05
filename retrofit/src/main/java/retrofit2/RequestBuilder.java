@@ -131,6 +131,9 @@ final class RequestBuilder {
   }
 
   private static String canonicalizeForPath(@Nullable String input, boolean alreadyEncoded) {
+    if (input == null) {
+      return "";
+    }
     int codePoint;
     for (int i = 0, limit = input.length(); i < limit; i += Character.charCount(codePoint)) {
       codePoint = input.codePointAt(i);
