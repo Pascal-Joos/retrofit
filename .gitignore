@@ -1,5 +1,6 @@
 # Gradle
 .gradle
+.gradle-cache
 build
 /reports
 local.properties
@@ -9,3 +10,4 @@ local.properties
 *.iml
 
 annotator-out/
+*.log
