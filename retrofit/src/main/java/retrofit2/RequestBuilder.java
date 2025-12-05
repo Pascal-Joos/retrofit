@@ -216,8 +216,7 @@ final class RequestBuilder {
 
   @SuppressWarnings("ConstantConditions") // Only called when isMultipart was true.
   void addPart(Headers headers, @Nullable RequestBody body) {
-    java.util.Objects.requireNonNull(multipartBuilder, "Multipart builder must not be null.")
-        .addPart(headers, body);
+    multipartBuilder.addPart(headers, body);
   }
 
   @SuppressWarnings("ConstantConditions") // Only called when isMultipart was true.
