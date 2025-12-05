@@ -169,10 +169,14 @@ final class RequestBuilder {
         }
         utf8Buffer.writeUtf8CodePoint(codePoint);
         while (!utf8Buffer.exhausted()) {
-          int b = utf8Buffer.readByte() & 0xff;
-          out.writeByte('%');
-          out.writeByte(HEX_DIGITS[(b >> 4) & 0xf]);
-          out.writeByte(HEX_DIGITS[b & 0xf]);
+          try {
+            int b = utf8Buffer.readByte() & 0xff;
+            out.writeByte('%');
+            out.writeByte(HEX_DIGITS[(b >> 4) & 0xf]);
+            out.writeByte(HEX_DIGITS[b & 0xf]);
+          } catch (java.io.EOFException e) {
+            break;
+          }
         }
       } else {
         // This character doesn't need encoding. Just copy it over.
