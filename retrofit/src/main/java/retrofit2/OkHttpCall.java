@@ -144,7 +144,12 @@ final class OkHttpCall<T> implements Call<T> {
       call.cancel();
     }
 
-    call.enqueue(
+    okhttp3.Call nonNullCall = call;
+    if (nonNullCall == null) {
+      throw new IllegalStateException("Call is null");
+    }
+
+    nonNullCall.enqueue(
         new okhttp3.Callback() {
           @Override
           public void onResponse(okhttp3.Call call, okhttp3.Response rawResponse) {
