@@ -825,7 +825,7 @@ final class RequestFactory {
             name);
       }
       // Verify URL replacement name is actually present in the URL path.
-      if (relativeUrlParamNames != null && !relativeUrlParamNames.contains(name)) {
+      if (!relativeUrlParamNames.contains(name)) {
         throw parameterError(method, p, "URL \"%s\" does not contain \"{%s}\".", relativeUrl, name);
       }
     }
