@@ -791,8 +791,14 @@ final class RequestFactory {
         validateResolvableType(p, type);
 
         Class<?> tagType = Utils.getRawType(type);
+        ParameterHandler<?>[] handlersNullable = parameterHandlers;
+        if (handlersNullable == null) {
+          throw new IllegalStateException(
+              "parameterHandlers must not be null when parsing parameter annotations");
+        }
+        ParameterHandler<?>[] handlers = handlersNullable;
         for (int i = p - 1; i >= 0; i--) {
-          ParameterHandler<?> otherHandler = parameterHandlers[i];
+          ParameterHandler<?> otherHandler = handlers[i];
           if (otherHandler instanceof ParameterHandler.Tag
               && ((ParameterHandler.Tag) otherHandler).cls.equals(tagType)) {
             throw parameterError(
