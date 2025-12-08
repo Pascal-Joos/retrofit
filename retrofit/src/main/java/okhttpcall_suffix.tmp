@@ -1,0 +1,167 @@
+  @Override
+  public synchronized boolean isExecuted() {
+    return executed;
+  }
+
+  @Override
+  public Response<T> execute() throws IOException {
+    okhttp3.Call call;
+
+    synchronized (this) {
+      if (executed) throw new IllegalStateException("Already executed.");
+      executed = true;
+
+      call = getRawCall();
+    }
+
+    if (canceled) {
+      call.cancel();
+    }
+
+    return parseResponse(call.execute());
+  }
+
+  private okhttp3.Call createRawCall() throws IOException {
+    okhttp3.Call call = callFactory.newCall(requestFactory.create(args));
+    if (call == null) {
+      throw new NullPointerException("Call.Factory returned null.");
+    }
+    return call;
+  }
+
+  Response<T> parseResponse(okhttp3.Response rawResponse) throws IOException {
+    ResponseBody rawBody = rawResponse.body();
+
+    // Remove the body's source (the only stateful object) so we can pass the response along.
+    rawResponse =
+        rawResponse
+            .newBuilder()
+            .body(new NoContentResponseBody(rawBody.contentType(), rawBody.contentLength()))
+            .build();
+
+    int code = rawResponse.code();
+    if (code < 200 || code >= 300) {
+      try {
+        // Buffer the entire body to avoid future I/O.
+        ResponseBody bufferedBody = Utils.buffer(rawBody);
+        return Response.error(bufferedBody, rawResponse);
+      } finally {
+        rawBody.close();
+      }
+    }
+
+    if (code == 204 || code == 205) {
+      rawBody.close();
+      return Response.success(null, rawResponse);
+    }
+
+    ExceptionCatchingResponseBody catchingBody = new ExceptionCatchingResponseBody(rawBody);
+    try {
+      T body = responseConverter.convert(catchingBody);
+      return Response.success(body, rawResponse);
+    } catch (RuntimeException e) {
+      // If the underlying source threw an exception, propagate that rather than indicating it was
+      // a runtime exception.
+      catchingBody.throwIfCaught();
+      throw e;
+    }
+  }
+
+  @Override
+  public void cancel() {
+    canceled = true;
+
+    okhttp3.Call call;
+    synchronized (this) {
+      call = rawCall;
+    }
+    if (call != null) {
+      call.cancel();
+    }
+  }
+
+  @Override
+  public boolean isCanceled() {
+    if (canceled) {
+      return true;
+    }
+    synchronized (this) {
+      return rawCall != null && rawCall.isCanceled();
+    }
+  }
+
+  static final class NoContentResponseBody extends ResponseBody {
+    private final @Nullable MediaType contentType;
+    private final long contentLength;
+
+    NoContentResponseBody(@Nullable MediaType contentType, long contentLength) {
+      this.contentType = contentType;
+      this.contentLength = contentLength;
+    }
+
+    @Nullable
+    @Override
+    public MediaType contentType() {
+      return contentType;
+    }
+
+    @Override
+    public long contentLength() {
+      return contentLength;
+    }
+
+    @Override
+    public BufferedSource source() {
+      throw new IllegalStateException("Cannot read raw response body of a converted body.");
+    }
+  }
+
+  static final class ExceptionCatchingResponseBody extends ResponseBody {
+    private final ResponseBody delegate;
+    private final BufferedSource delegateSource;
+    @Nullable IOException thrownException;
+
+    ExceptionCatchingResponseBody(ResponseBody delegate) {
+      this.delegate = delegate;
+      this.delegateSource =
+          Okio.buffer(
+              new ForwardingSource(delegate.source()) {
+                @Override
+                public long read(Buffer sink, long byteCount) throws IOException {
+                  try {
+                    return super.read(sink, byteCount);
+                  } catch (IOException e) {
+                    thrownException = e;
+                    throw e;
+                  }
+                }
+              });
+    }
+
+    @Override
+    public MediaType contentType() {
+      return delegate.contentType();
+    }
+
+    @Override
+    public long contentLength() {
+      return delegate.contentLength();
+    }
+
+    @Override
+    public BufferedSource source() {
+      return delegateSource;
+    }
+
+    @Override
+    public void close() {
+      delegate.close();
+    }
+
+    void throwIfCaught() throws IOException {
+      if (thrownException != null) {
+        throw thrownException;
+      }
+    }
+  }
+}
