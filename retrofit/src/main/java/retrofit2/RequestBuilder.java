@@ -198,10 +198,10 @@ final class RequestBuilder {
 
     if (encoded) {
       //noinspection ConstantConditions Checked to be non-null by above 'if' block.
-      urlBuilder.addEncodedQueryParameter(name, value);
+      java.util.Objects.requireNonNull(urlBuilder).addEncodedQueryParameter(name, value);
     } else {
       //noinspection ConstantConditions Checked to be non-null by above 'if' block.
-      urlBuilder.addQueryParameter(name, value);
+      java.util.Objects.requireNonNull(urlBuilder).addQueryParameter(name, value);
     }
   }
 
