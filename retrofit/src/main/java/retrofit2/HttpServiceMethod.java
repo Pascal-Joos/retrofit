@@ -18,7 +18,6 @@ package retrofit2;
 import static retrofit2.Utils.getRawType;
 import static retrofit2.Utils.methodError;
 
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -78,8 +77,7 @@ abstract class HttpServiceMethod<ResponseT, ReturnT> extends ServiceMethod<Retur
       throw methodError(method, "Response must include generic type (e.g., Response<String>)");
     }
     // TODO support Unit for Kotlin?
-    if (Nullability.castToNonnull(requestFactory.httpMethod).equals("HEAD")
-        && !Void.class.equals(responseType)) {
+    if (requestFactory.httpMethod.equals("HEAD") && !Void.class.equals(responseType)) {
       throw methodError(method, "HEAD method must use Void as response type.");
     }
 
