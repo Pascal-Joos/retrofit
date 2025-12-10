@@ -38,9 +38,8 @@ final class OkHttpCall<T> implements Call<T> {
 
   private volatile boolean canceled;
 
-  @Nullable
   @GuardedBy("this")
-  private okhttp3.Call rawCall;
+  private @Nullable okhttp3.Call rawCall;
 
   @GuardedBy("this") // Either a RuntimeException, non-fatal Error, or IOException.
   private @Nullable Throwable creationFailure;
@@ -141,12 +140,7 @@ final class OkHttpCall<T> implements Call<T> {
       return;
     }
 
-    if (call == null) {
-      callback.onFailure(this, new NullPointerException("rawCall == null"));
-      return;
-    }
-
-    if (canceled && call != null) {
+    if (canceled) {
       call.cancel();
     }
 
