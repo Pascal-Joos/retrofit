@@ -94,6 +94,10 @@ final class RequestFactory {
   }
 
   okhttp3.Request create(Object[] args) throws IOException {
+    if (parameterHandlers == null) {
+      throw new IllegalStateException("parameterHandlers is null");
+    }
+
     @SuppressWarnings("unchecked") // It is an error to invoke a method with the wrong arg types.
     ParameterHandler<Object>[] handlers = (ParameterHandler<Object>[]) parameterHandlers;
 
