@@ -53,7 +53,7 @@ final class RequestBuilder {
 
   private final HttpUrl baseUrl;
   private @Nullable String relativeUrl;
-  @Nullable private HttpUrl.Builder urlBuilder;
+  private @Nullable HttpUrl.Builder urlBuilder;
 
   private final Request.Builder requestBuilder;
   private final Headers.Builder headersBuilder;
@@ -187,17 +187,13 @@ final class RequestBuilder {
 
   void addQueryParam(@Nullable String name, @Nullable String value, boolean encoded) {
     if (relativeUrl != null) {
+      // Do a one-time combination of the built relative URL and the base URL.
       urlBuilder = baseUrl.newBuilder(relativeUrl);
       if (urlBuilder == null) {
         throw new IllegalArgumentException(
             "Malformed URL. Base: " + baseUrl + ", Relative: " + relativeUrl);
       }
       relativeUrl = null;
-    }
-
-    HttpUrl.Builder urlBuilder = this.urlBuilder;
-    if (urlBuilder == null) {
-      throw new IllegalStateException("urlBuilder == null");
     }
 
     if (encoded) {
