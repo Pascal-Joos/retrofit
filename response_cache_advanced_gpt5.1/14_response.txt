@@ -1,0 +1,16 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @SuppressWarnings("ConstantConditions") // Only called when isMultipart was true.
+  void addPart(MultipartBody.Part part) {
+    MultipartBody.Builder multipartBuilder = this.multipartBuilder;
+    if (multipartBuilder == null) {
+      throw new IllegalStateException("Multipart body must be initialized.");
+    }
+    multipartBuilder.addPart(part);
+  }
+  ```
+    ]]>
+  </code>
+</response>

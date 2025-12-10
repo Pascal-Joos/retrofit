@@ -1,0 +1,35 @@
+```xml
+<response>
+    <reason><![CDATA[
+Based solely on the provided method body, there is not enough information to determine whether `formBuilder` can be null at the call site `formBuilder.addEncoded(name, value);`.
+
+From this snippet:
+
+  void addFormField(String name, String value, boolean encoded) {
+    if (encoded) {
+      formBuilder.addEncoded(name, value);
+    } else {
+      formBuilder.add(name, value);
+    }
+  }
+
+we know:
+- `formBuilder` is an instance field or local variable declared elsewhere.
+- There is no null check on `formBuilder` in this method.
+- The `@SuppressWarnings("ConstantConditions")` comment about `isFormEncoded` only tells us that this method is called under a specific precondition (when some `isFormEncoded` was true), but it does not itself guarantee that `formBuilder` is non-null unless `isFormEncoded` and `formBuilder` are logically tied by an invariant elsewhere in the class.
+
+To establish that `formBuilder` cannot be null, we would need to see:
+- Where and how `formBuilder` is declared and initialized.
+- The code paths that lead to `addFormField` being called (including the conditions under which `isFormEncoded` is set).
+- Any invariants or class-level contracts that ensure `formBuilder` is always initialized before `addFormField` is invoked.
+
+Without that surrounding context, we cannot soundly conclude that `formBuilder` is always non-null, nor can we conclude it can be null. The determination depends on code and contracts outside this snippet.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Show the declaration of `formBuilder` (its type and where it is defined: field or local variable).]]></request>
+        <request><![CDATA[Show all constructors and initialization logic that assign a value to `formBuilder`.]]></request>
+        <request><![CDATA[Show the code that calls `addFormField`, including how/where `isFormEncoded` is set and enforced.]]></request>
+    </requests>
+</response>
+```

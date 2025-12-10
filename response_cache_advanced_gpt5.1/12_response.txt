@@ -1,0 +1,29 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided snippet alone, there is no explicit guarantee that `multipartBuilder` is non-null at the point of use:
+
+  void addPart(Headers headers,  RequestBody body) {
+    multipartBuilder.addPart(headers, body);
+  }
+
+We are told only that this method is “Only called when isMultipart was true” (and that the warning suppression relies on that fact). Whether `multipartBuilder` can be null depends entirely on how and when it is initialized relative to `isMultipart`, and on any invariants maintained by the surrounding class.
+
+To determine if `multipartBuilder` can be null, we would need to see:
+
+- Where `multipartBuilder` is declared (field or local).
+- All assignments to `multipartBuilder` (e.g., in constructors, builder methods, or conditionals).
+- The logic that sets and checks `isMultipart` and any code paths that call `addPart`.
+- Any class or method contracts that guarantee `multipartBuilder` is initialized whenever `isMultipart` is true.
+
+Since that surrounding code and invariants are not provided, it is not possible to soundly conclude that `multipartBuilder` can or cannot be null based only on this method and its comment. The annotation `@SuppressWarnings("ConstantConditions")` and the comment are hints about the author’s intent, but they are not a formal guarantee without the rest of the class logic.
+
+Therefore, with the information given, the nullability of `multipartBuilder` at this call site cannot be determined.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the declaration of `multipartBuilder` (including its type and whether it is a field or local variable).]]></request>
+        <request><![CDATA[Provide all constructors and any methods that assign to `multipartBuilder`, plus the code where `isMultipart` is set and where `addPart` is invoked.]]></request>
+    </requests>
+</response>
+```

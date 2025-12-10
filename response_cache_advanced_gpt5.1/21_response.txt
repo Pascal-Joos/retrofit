@@ -1,0 +1,28 @@
+<response>
+    <reason><![CDATA[
+The `input` parameter of `canonicalizeForPath(String input, boolean alreadyEncoded)` is always supplied from `addPathParam(String name, String value, boolean encoded)`:
+
+```java
+String replacement = canonicalizeForPath(value, encoded);
+```
+
+`addPathParam` is, in turn, only called (in the provided chain) from `ParameterHandler$Path.apply`:
+
+```java
+void apply(RequestBuilder builder, T value) throws IOException {
+  if (value == null) {
+    throw Utils.parameterError(
+        method, p, "Path parameter \"" + name + "\" value must not be null.");
+  }
+  builder.addPathParam(name, valueConverter.convert(value), encoded);
+}
+```
+
+Here, `value` is explicitly checked for null and rejected with an exception if it is null. Only non-null `value` proceeds to `valueConverter.convert(value)`, and the result is passed as `value` to `addPathParam`, which becomes `input` in `canonicalizeForPath`.
+
+Within `canonicalizeForPath`, `input` is used immediately (`input.length()`, `input.codePointAt(i)`, etc.) without any null checks, and would throw a `NullPointerException` if `input` were null. The existing call chain ensures this situation cannot occur: callers reject null before calling.
+
+Based on the provided call chain, there is no path where `null` can be passed to `input`; attempting to do so would be caught earlier by the explicit null check in `ParameterHandler$Path.apply`.
+    ]]></reason>
+    <value>NO</value>
+</response>
