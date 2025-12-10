@@ -17,7 +17,6 @@ package retrofit2;
 
 import static retrofit2.Utils.throwIfFatal;
 
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.io.IOException;
 import java.util.Objects;
 import javax.annotation.Nullable;
@@ -142,7 +141,7 @@ final class OkHttpCall<T> implements Call<T> {
     }
 
     if (canceled) {
-      Nullability.castToNonnull(call).cancel();
+      call.cancel();
     }
 
     call.enqueue(
