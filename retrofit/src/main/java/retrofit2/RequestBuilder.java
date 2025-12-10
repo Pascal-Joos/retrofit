@@ -15,6 +15,7 @@
  */
 package retrofit2;
 
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.io.IOException;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
@@ -132,7 +133,9 @@ final class RequestBuilder {
 
   private static String canonicalizeForPath(@Nullable String input, boolean alreadyEncoded) {
     int codePoint;
-    for (int i = 0, limit = input.length(); i < limit; i += Character.charCount(codePoint)) {
+    for (int i = 0, limit = Nullability.castToNonnull(input).length();
+        i < limit;
+        i += Character.charCount(codePoint)) {
       codePoint = input.codePointAt(i);
       if (codePoint < 0x20
           || codePoint >= 0x7f
