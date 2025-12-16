@@ -788,8 +788,7 @@ final class RequestFactory {
 
         Class<?> tagType = Utils.getRawType(type);
         for (int i = p - 1; i >= 0; i--) {
-          ParameterHandler<?> otherHandler =
-              parameterHandlers != null ? parameterHandlers[i] : null;
+          ParameterHandler<?> otherHandler = parameterHandlers[i];
           if (otherHandler instanceof ParameterHandler.Tag
               && ((ParameterHandler.Tag) otherHandler).cls.equals(tagType)) {
             throw parameterError(
