@@ -207,6 +207,13 @@ final class RequestBuilder {
 
   @SuppressWarnings("ConstantConditions") // Only called when isFormEncoded was true.
   void addFormField(String name, String value, boolean encoded) {
+    if (formBuilder == null) {
+      if (encoded) {
+        return;
+      } else {
+        return;
+      }
+    }
     if (encoded) {
       formBuilder.addEncoded(name, value);
     } else {
