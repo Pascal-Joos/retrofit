@@ -1,0 +1,23 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @SuppressWarnings("ConstantConditions") // Only called when isFormEncoded was true.
+  void addFormField(String name, String value, boolean encoded) {
+    if (formBuilder == null) {
+      if (encoded) {
+        return;
+      } else {
+        return;
+      }
+    }
+    if (encoded) {
+      formBuilder.addEncoded(name, value);
+    } else {
+      formBuilder.add(name, value);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

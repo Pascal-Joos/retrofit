@@ -1,0 +1,31 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  void addQueryParam( String name,  String value, boolean encoded) {
+    if (relativeUrl != null) {
+      // Do a one-time combination of the built relative URL and the base URL.
+      urlBuilder = baseUrl.newBuilder(relativeUrl);
+      if (urlBuilder == null) {
+        throw new IllegalArgumentException(
+            "Malformed URL. Base: " + baseUrl + ", Relative: " + relativeUrl);
+      }
+      relativeUrl = null;
+    }
+
+    if (urlBuilder == null) {
+      throw new IllegalStateException("urlBuilder == null");
+    }
+
+    if (encoded) {
+      //noinspection ConstantConditions Checked to be non-null by above 'if' block.
+      urlBuilder.addEncodedQueryParameter(name, value);
+    } else {
+      //noinspection ConstantConditions Checked to be non-null by above 'if' block.
+      urlBuilder.addQueryParameter(name, value);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

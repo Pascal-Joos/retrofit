@@ -1,0 +1,15 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @SuppressWarnings("ConstantConditions") // Only called when isMultipart was true.
+  void addPart(Headers headers, RequestBody body) {
+    if (multipartBuilder == null) {
+      return;
+    }
+    multipartBuilder.addPart(headers, body);
+  }
+  ```
+    ]]>
+  </code>
+</response>
