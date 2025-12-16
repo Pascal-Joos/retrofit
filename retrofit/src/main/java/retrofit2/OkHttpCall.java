@@ -140,10 +140,6 @@ final class OkHttpCall<T> implements Call<T> {
       return;
     }
 
-    if (call == null) {
-      throw new IllegalStateException("Call is null");
-    }
-
     if (canceled) {
       call.cancel();
     }
