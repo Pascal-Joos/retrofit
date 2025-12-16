@@ -196,6 +196,10 @@ final class RequestBuilder {
       relativeUrl = null;
     }
 
+    if (urlBuilder == null) {
+      throw new IllegalStateException("urlBuilder is null");
+    }
+
     if (encoded) {
       //noinspection ConstantConditions Checked to be non-null by above 'if' block.
       urlBuilder.addEncodedQueryParameter(name, value);
