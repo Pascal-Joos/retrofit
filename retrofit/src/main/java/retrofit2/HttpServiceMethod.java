@@ -77,7 +77,8 @@ abstract class HttpServiceMethod<ResponseT, ReturnT> extends ServiceMethod<Retur
       throw methodError(method, "Response must include generic type (e.g., Response<String>)");
     }
     // TODO support Unit for Kotlin?
-    if (requestFactory.httpMethod.equals("HEAD") && !Void.class.equals(responseType)) {
+    String httpMethod = requestFactory.httpMethod;
+    if (httpMethod != null && httpMethod.equals("HEAD") && !Void.class.equals(responseType)) {
       throw methodError(method, "HEAD method must use Void as response type.");
     }
 
