@@ -227,6 +227,9 @@ final class RequestBuilder {
 
   @SuppressWarnings("ConstantConditions") // Only called when isMultipart was true.
   void addPart(MultipartBody.Part part) {
+    if (multipartBuilder == null) {
+      throw new IllegalStateException("Multipart body type was not set to multipart.");
+    }
     multipartBuilder.addPart(part);
   }
 
