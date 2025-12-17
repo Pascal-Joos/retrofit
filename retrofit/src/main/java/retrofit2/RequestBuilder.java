@@ -219,6 +219,9 @@ final class RequestBuilder {
 
   @SuppressWarnings("ConstantConditions") // Only called when isMultipart was true.
   void addPart(Headers headers, @Nullable RequestBody body) {
+    if (multipartBuilder == null) {
+      throw new IllegalStateException("Multipart body type was not set to multipart.");
+    }
     multipartBuilder.addPart(headers, body);
   }
 
