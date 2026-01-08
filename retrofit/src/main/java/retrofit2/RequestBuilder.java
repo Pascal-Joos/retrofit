@@ -15,7 +15,6 @@
  */
 package retrofit2;
 
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.io.IOException;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
@@ -133,24 +132,22 @@ final class RequestBuilder {
 
   private static String canonicalizeForPath(@Nullable String input, boolean alreadyEncoded) {
     int codePoint;
-    for (int i = 0, limit = Nullability.castToNonnull(input).length();
-        i < limit;
-        i += Character.charCount(codePoint)) {
-      codePoint = Nullability.castToNonnull(input).codePointAt(i);
+    for (int i = 0, limit = input.length(); i < limit; i += Character.charCount(codePoint)) {
+      codePoint = input.codePointAt(i);
       if (codePoint < 0x20
           || codePoint >= 0x7f
           || PATH_SEGMENT_ALWAYS_ENCODE_SET.indexOf(codePoint) != -1
           || (!alreadyEncoded && (codePoint == '/' || codePoint == '%'))) {
         // Slow path: the character at i requires encoding!
         Buffer out = new Buffer();
-        out.writeUtf8(Nullability.castToNonnull(input), 0, i);
-        canonicalizeForPath(out, Nullability.castToNonnull(input), i, limit, alreadyEncoded);
+        out.writeUtf8(input, 0, i);
+        canonicalizeForPath(out, input, i, limit, alreadyEncoded);
         return out.readUtf8();
       }
     }
 
     // Fast path: no characters required encoding.
-    return Nullability.castToNonnull(input);
+    return input;
   }
 
   private static void canonicalizeForPath(
