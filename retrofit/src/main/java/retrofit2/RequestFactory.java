@@ -97,10 +97,6 @@ final class RequestFactory {
     @SuppressWarnings("unchecked") // It is an error to invoke a method with the wrong arg types.
     ParameterHandler<Object>[] handlers = (ParameterHandler<Object>[]) parameterHandlers;
 
-    if (handlers == null) {
-      throw new IllegalStateException("parameterHandlers not set");
-    }
-
     int argumentCount = args.length;
     if (argumentCount != handlers.length) {
       throw new IllegalArgumentException(
