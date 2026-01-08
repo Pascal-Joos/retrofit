@@ -60,7 +60,7 @@ final class RequestBuilder {
   private @Nullable MediaType contentType;
 
   private final boolean hasBody;
-  @Nullable private MultipartBody.Builder multipartBuilder;
+  private @Nullable MultipartBody.Builder multipartBuilder;
   private @Nullable FormBody.Builder formBuilder;
   private @Nullable RequestBody body;
 
