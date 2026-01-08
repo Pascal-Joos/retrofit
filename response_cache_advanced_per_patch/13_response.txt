@@ -1,0 +1,16 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @SuppressWarnings("ConstantConditions") // Only called when isMultipart was true.
+  void addPart(MultipartBody.Part part) {
+    if (multipartBuilder == null) {
+      multipartBuilder = new MultipartBody.Builder();
+      multipartBuilder.setType(MultipartBody.FORM);
+    }
+    multipartBuilder.addPart(part);
+  }
+  ```
+    ]]>
+  </code>
+</response>

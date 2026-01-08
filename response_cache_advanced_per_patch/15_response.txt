@@ -1,0 +1,72 @@
+```xml
+<response>
+    <reason><![CDATA[
+We must consider all possible executions of addQueryParam:
+
+void addQueryParam(String name, String value, boolean encoded) {
+    if (relativeUrl != null) {
+      urlBuilder = baseUrl.newBuilder(relativeUrl);
+      if (urlBuilder == null) {
+        throw new IllegalArgumentException(
+            "Malformed URL. Base: " + baseUrl + ", Relative: " + relativeUrl);
+      }
+      relativeUrl = null;
+    }
+
+    if (encoded) {
+      urlBuilder.addEncodedQueryParameter(name, value);
+    } else {
+      urlBuilder.addQueryParameter(name, value);
+    }
+}
+
+Key points:
+
+1. urlBuilder is only assigned in this method when relativeUrl != null:
+   - It gets the value baseUrl.newBuilder(relativeUrl).
+   - Immediately after, there is an explicit null check:
+       if (urlBuilder == null) { throw ... }
+     So if relativeUrl != null at entry, either:
+       - urlBuilder is non-null after this block, or
+       - an exception is thrown and the method does not proceed.
+
+   Therefore, along any path where relativeUrl != null at method entry, by the time
+   we reach urlBuilder.addEncodedQueryParameter(...) / addQueryParameter(...),
+   urlBuilder is guaranteed non-null.
+
+2. However, consider the case relativeUrl == null at method entry:
+   - The if (relativeUrl != null) block is skipped entirely.
+   - In that case, urlBuilder is not assigned at all within this call.
+   - There is no null check on urlBuilder before it is dereferenced.
+   - Whether urlBuilder is null or not then depends on:
+       - Its field/variable declaration (e.g., is it a field initialized earlier?)
+       - Any prior assignments done outside this method.
+   - The provided code does not show any such guarantee that urlBuilder is
+     already non-null when relativeUrl is null.
+
+3. Because the question is "can urlBuilder at that line possibly be null" we do
+   not assume any hidden invariants beyond what is shown. From the local
+   method’s perspective, there is a feasible control flow:
+   - Method is called with relativeUrl == null.
+   - urlBuilder has never been initialized (or was explicitly set to null previously).
+   - Execution reaches urlBuilder.addEncodedQueryParameter(name, value).
+   - urlBuilder could thus be null, causing a NullPointerException.
+
+4. The comment:
+//noinspection ConstantConditions Checked to be non-null by above 'if' block.
+   is not logically correct in isolation: that “above 'if' block” runs only when
+   relativeUrl != null. When relativeUrl is null, that block does not execute
+   and provides no guarantee about urlBuilder.
+
+5. Contracts/semantics of baseUrl.newBuilder(...) do not help in the
+   relativeUrl == null case, because that call is not even made then.
+
+Conclusion:
+Given only the code shown, there exists at least one plausible execution path
+(relativeUrl == null and urlBuilder either uninitialized or null) where
+urlBuilder can be null when urlBuilder.addEncodedQueryParameter(...) is invoked.
+Therefore, urlBuilder can possibly be null at that line.
+    ]]></reason>
+    <value>YES</value>
+</response>
+```

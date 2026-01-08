@@ -1,0 +1,50 @@
+```xml
+<response>
+    <reason><![CDATA[
+Within this method alone, `urlBuilder` can be null on some control-flow paths.
+
+Control-flow and state:
+
+1. The method uses an instance field `urlBuilder` (not a local).
+2. `urlBuilder` is only (re)assigned inside:
+   if (relativeUrl != null) {
+       urlBuilder = baseUrl.newBuilder(relativeUrl);
+       if (urlBuilder == null) {
+         throw new IllegalArgumentException(...);
+       }
+       relativeUrl = null;
+   }
+
+3. After this `if`:
+   - If `relativeUrl` was non-null:
+     - `urlBuilder` is set to `baseUrl.newBuilder(relativeUrl)`.
+     - If that call returns null, the method throws and never reaches `urlBuilder.addQueryParameter(...)`.
+     - Therefore, along this branch, whenever execution reaches `urlBuilder.addQueryParameter(...)`, `urlBuilder` is guaranteed non-null (by the explicit null check and exception).
+   - If `relativeUrl` was null:
+     - The `if` block is skipped completely.
+     - In this method, `urlBuilder` is then not written at all and retains whatever value it had before the call.
+     - There is no local null check in this branch; the subsequent call uses `urlBuilder` unconditionally.
+
+4. Because the snippet does not show:
+   - How `urlBuilder` is initialized elsewhere in the class, or
+   - Any class invariant that guarantees `urlBuilder` is non-null whenever `relativeUrl == null`,
+
+   we must consider that, from the perspective of this method alone, `urlBuilder` might still be null when `relativeUrl == null`.
+
+5. The code comment:
+//noinspection ConstantConditions Checked to be non-null by above 'if' block.
+is only logically correct if there is a class-level invariant such as:
+   - `urlBuilder` is non-null whenever `relativeUrl == null`, or
+   - The method is only called in states where `urlBuilder` has been initialized.
+
+Those invariants are not shown. Without them, static analysis cannot conclude that `urlBuilder` is always non-null on the path where `relativeUrl == null`.
+
+Conclusion:
+- On the path `relativeUrl != null`, `urlBuilder` is provably non-null.
+- On the path `relativeUrl == null`, this method provides no guarantee; `urlBuilder` could be null depending on prior state.
+
+Therefore, considering only the presented code, `urlBuilder` can possibly be null at the call to `urlBuilder.addQueryParameter(name, value);`.
+    ]]></reason>
+    <value>YES</value>
+</response>
+```

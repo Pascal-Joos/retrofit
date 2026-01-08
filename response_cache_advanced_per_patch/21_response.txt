@@ -1,0 +1,27 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private static String canonicalizeForPath( String input, boolean alreadyEncoded) {
+    int codePoint;
+    for (int i = 0, limit = Nullability.castToNonnull(input).length(); i < limit; i += Character.charCount(codePoint)) {
+      codePoint = Nullability.castToNonnull(input).codePointAt(i);
+      if (codePoint < 0x20
+          || codePoint >= 0x7f
+          || PATH_SEGMENT_ALWAYS_ENCODE_SET.indexOf(codePoint) != -1
+          || (!alreadyEncoded && (codePoint == '/' || codePoint == '%'))) {
+        // Slow path: the character at i requires encoding!
+        Buffer out = new Buffer();
+        out.writeUtf8(Nullability.castToNonnull(input), 0, i);
+        canonicalizeForPath(out, Nullability.castToNonnull(input), i, limit, alreadyEncoded);
+        return out.readUtf8();
+      }
+    }
+
+    // Fast path: no characters required encoding.
+    return Nullability.castToNonnull(input);
+  }
+  ```
+    ]]>
+  </code>
+</response>
