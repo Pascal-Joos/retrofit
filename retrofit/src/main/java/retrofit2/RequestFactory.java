@@ -787,6 +787,9 @@ final class RequestFactory {
         validateResolvableType(p, type);
 
         Class<?> tagType = Utils.getRawType(type);
+        if (parameterHandlers == null) {
+          return null;
+        }
         for (int i = p - 1; i >= 0; i--) {
           ParameterHandler<?> otherHandler = parameterHandlers[i];
           if (otherHandler instanceof ParameterHandler.Tag
