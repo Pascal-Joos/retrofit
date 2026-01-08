@@ -61,7 +61,7 @@ final class RequestBuilder {
 
   private final boolean hasBody;
   private @Nullable MultipartBody.Builder multipartBuilder;
-  @Nullable private FormBody.Builder formBuilder;
+  private @Nullable FormBody.Builder formBuilder;
   private @Nullable RequestBody body;
 
   RequestBuilder(
