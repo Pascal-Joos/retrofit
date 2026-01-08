@@ -53,7 +53,7 @@ final class RequestBuilder {
 
   private final HttpUrl baseUrl;
   private @Nullable String relativeUrl;
-  @Nullable private HttpUrl.Builder urlBuilder;
+  private @Nullable HttpUrl.Builder urlBuilder;
 
   private final Request.Builder requestBuilder;
   private final Headers.Builder headersBuilder;
