@@ -1,0 +1,20 @@
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  @SuppressWarnings("ConstantConditions") // Only called when isFormEncoded was true.
+  void addFormField(String name, String value, boolean encoded) {
+    FormBody.Builder formBuilder = this.formBuilder;
+    if (formBuilder == null) {
+      throw new IllegalStateException("Form builder was not initialized.");
+    }
+    if (encoded) {
+      formBuilder.addEncoded(name, value);
+    } else {
+      Nullability.castToNonnull(formBuilder).add(name, value);
+    }
+  }
+  ```
+    ]]>
+  </code>
+</response>

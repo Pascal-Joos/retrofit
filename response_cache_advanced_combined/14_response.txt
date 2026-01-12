@@ -1,0 +1,29 @@
+```xml
+<response>
+    <reason><![CDATA[
+From the provided snippet alone, we only see:
+
+  @SuppressWarnings("ConstantConditions") // Only called when isMultipart was true.
+  void addPart(MultipartBody.Part part) {
+    multipartBuilder.addPart(part);
+  }
+
+To determine if `multipartBuilder` can be null at the call site `multipartBuilder.addPart(part);`, we must know:
+
+- Where and how `multipartBuilder` is declared (field, local, parameter, etc.).
+- All code paths that assign a value to `multipartBuilder`.
+- Any conditions under which `addPart` is invoked, particularly what "Only called when isMultipart was true" guarantees in the surrounding class.
+- Whether `isMultipart` implies that `multipartBuilder` has been initialized (e.g., via a constructor or a lazy-initialization method).
+- Any external contracts (e.g., builder pattern guarantees in this class or from the surrounding API) that state `multipartBuilder` is always non-null once `isMultipart` is true.
+
+None of that information is present in the snippet. The comment `// Only called when isMultipart was true.` and the `@SuppressWarnings("ConstantConditions")` annotation suggest the author believes (and wants the static analyzer to accept) that `multipartBuilder` is never null when this method is invoked, but this is not a formal guarantee without seeing the rest of the class and the call sites.
+
+Without the initialization and usage context of `multipartBuilder`, it is impossible to conclusively say whether it can or cannot be null. Therefore, based solely on the given code, we cannot determine this with certainty.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the declaration of `multipartBuilder` (its type, whether it is a field or local, and any annotations such as @NonNull/@Nullable).]]></request>
+        <request><![CDATA[Provide the class constructor(s) and any methods that initialize or modify `multipartBuilder`, as well as where and under what conditions `addPart` is called (especially the logic around `isMultipart`).]]></request>
+    </requests>
+</response>
+```

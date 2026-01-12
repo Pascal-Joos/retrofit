@@ -1,0 +1,29 @@
+```xml
+<response>
+    <reason><![CDATA[
+Within the method body, the local variable `formBuilder` is assigned directly from `this.formBuilder`:
+
+    FormBody.Builder formBuilder = this.formBuilder;
+
+Immediately after, there is an explicit null-check:
+
+    if (formBuilder == null) {
+      throw new IllegalStateException("Form builder was not initialized.");
+    }
+
+This guarantees that, for all subsequent code paths in this method, `formBuilder` is non-null. The calls:
+
+    formBuilder.addEncoded(name, value);
+    formBuilder.add(name, value);
+
+are both in the `if/else` that follows this null-check, and there is no reassignment to `formBuilder` between the null-check and these calls.
+
+Therefore, assuming standard Java semantics (no reflection, no JVM corruption, no concurrency-based mutation of the local variable, which is not possible), `formBuilder` cannot be null at the line:
+
+    formBuilder.add(name, value);
+
+If `this.formBuilder` were null on entry, the method would throw `IllegalStateException` before reaching that line.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```

@@ -1,0 +1,32 @@
+```xml
+<response>
+    <reason><![CDATA[
+Based solely on the provided method body, there is no information about:
+
+- Where or how `formBuilder` is declared (field, local variable, parameter).
+- How or when `formBuilder` is initialized.
+- Whether there are any prior null checks or constructor guarantees that `formBuilder` is non-null.
+- Any documented contract (e.g., class invariants) that would guarantee `formBuilder` is always initialized before `addFormField` is called.
+
+Within `addFormField` itself, `formBuilder` is used directly in both branches:
+
+    if (encoded) {
+      formBuilder.addEncoded(name, value);
+    } else {
+      formBuilder.add(name, value);
+    }
+
+There are no null checks on `formBuilder` here, nor is it assigned within this method. Without context from the surrounding class, constructors, or any factory/builder methods that might ensure `formBuilder` is always non-null, we cannot conclude that `formBuilder` is definitely non-null or definitely nullable at this call site.
+
+The `@SuppressWarnings("ConstantConditions")` comment is about the `isFormEncoded` condition at the call site of this method (per the comment: "Only called when isFormEncoded was true."), and does not establish anything about the nullability of `formBuilder`.
+
+Therefore, with the information given, it is not possible to determine whether `formBuilder` can be null at `formBuilder.add(name, value);`.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the declaration of `formBuilder` (field/local/parameter), including its type and any annotations (e.g., @NotNull, @Nullable).]]></request>
+        <request><![CDATA[Provide the class constructor(s) and any initialization logic that assign a value to `formBuilder`.]]></request>
+        <request><![CDATA[If applicable, provide any factory/builder methods or documentation that describe the lifecycle and invariants of `formBuilder`.]]></request>
+    </requests>
+</response>
+```

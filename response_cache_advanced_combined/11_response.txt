@@ -1,0 +1,31 @@
+```xml
+<response>
+    <reason><![CDATA[
+Based solely on the provided method:
+
+  @SuppressWarnings("ConstantConditions") // Only called when isMultipart was true.
+  void addPart(Headers headers,  RequestBody body) {
+    multipartBuilder.addPart(headers, body);
+  }
+
+we cannot determine whether `multipartBuilder` can be null at the call site.
+
+To answer this, we must know:
+
+- Where and how `multipartBuilder` is declared (field or local).
+- All code paths that assign a value to `multipartBuilder`.
+- The logic around `isMultipart` and how it guarantees (or does not guarantee) that `multipartBuilder` is initialized before `addPart` is called.
+- Any factory or builder methods that construct the containing object and/or initialize `multipartBuilder`.
+
+The suppression `@SuppressWarnings("ConstantConditions") // Only called when isMultipart was true.` suggests the author intends that `addPart` is only invoked in a state where required fields (including `multipartBuilder`) are non-null, but this is a logical/contractual intention, not a compile-time or runtime guarantee we can verify without seeing the rest of the class.
+
+Because we lack the declaration and initialization logic of `multipartBuilder` and the control flow that enforces `isMultipart == true` before calling `addPart`, we cannot conclusively say whether `multipartBuilder` can be null.
+    ]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Provide the declaration of `multipartBuilder` (including its type, whether it is a field or local variable, and any annotations such as @Nullable/@NotNull).]]></request>
+        <request><![CDATA[Provide all code that initializes or assigns to `multipartBuilder`, including constructors, factory methods, and any setters.]]></request>
+        <request><![CDATA[Provide the code that controls `isMultipart` and all call sites of `addPart(...)` so we can verify that the method is only invoked under conditions that guarantee `multipartBuilder` is initialized.]]></request>
+    </requests>
+</response>
+```

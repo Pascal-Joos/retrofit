@@ -1,0 +1,16 @@
+```xml
+<response>
+    <reason><![CDATA[
+Within this method, `requestFactory` is passed in as a parameter and is never reassigned, so its nullability is determined entirely by the caller. The relevant question is whether `requestFactory.httpMethod` can be null at this point.
+
+This code is from Retrofit's internal implementation. `RequestFactory` is constructed by `RequestFactory.parseAnnotations(...)` (or a similar factory method) before being passed into `parseAnnotations`. In Retrofit's source, `RequestFactory` has a non-null `httpMethod` field that is set during parsing of the method annotations. The parsing logic enforces that an HTTP method annotation (e.g., `@GET`, `@POST`, `@HEAD`, etc.) is present and valid; if it is missing or inconsistent, an exception is thrown during construction and a `RequestFactory` instance is never created. In other words, if a `RequestFactory` exists and is passed into this method, its `httpMethod` field is guaranteed to be non-null.
+
+There are no assignments or control-flow branches inside `parseAnnotations` that modify `requestFactory` or `httpMethod`, nor is there any path that skips initialization of `httpMethod` in the `RequestFactory`’s creation before this method is invoked. The contract of `RequestFactory` in Retrofit ensures `httpMethod` is a required, non-null value when a `RequestFactory` instance is successfully constructed. Therefore, at the line
+
+    if (requestFactory.httpMethod.equals("HEAD") && !Void.class.equals(responseType)) {
+
+`requestFactory.httpMethod` cannot be null in normal execution; if it ever were null, that would already represent a violation of `RequestFactory`’s construction guarantees and would have caused an earlier failure.
+    ]]></reason>
+    <value>NO</value>
+</response>
+```
